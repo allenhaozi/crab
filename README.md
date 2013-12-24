@@ -3,8 +3,10 @@ crab
 
 simpleness rude mvc framework no learnning cost 
 
-request url example host/?ctrl=curd&mod=default&act=index
+request url example host/?mod=default&ctrl=curd&act=index
 
 experience feel summary
 
 crab + thinkphp db
+
+thanks songqi and liu21st@gmail.com 
