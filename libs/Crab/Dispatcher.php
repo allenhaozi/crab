@@ -57,7 +57,7 @@ class Crab_Dispatcher {
      *
      * @var array
      */
-    protected $_arrMvc = array('module' => 'default', 'controller' => 'index', 'action' => 'index',);
+    protected $_arrMvc = array('mod' => 'default', 'ctrl' => 'index', 'act' => 'index',);
     /**
      * 构造函数
      */
@@ -67,7 +67,7 @@ class Crab_Dispatcher {
      * 设置配置参数，配置参数格式如下：
      * array(
      *  'view'	=> 'Crab_View'		//默认的视图类
-     * 	'mdir'	=> '',				//modules目录的地址
+     * 	'mdir'	=> '',				//modles目录的地址
      * );
      *
      * @param array arrOption    配置参数
@@ -101,28 +101,28 @@ class Crab_Dispatcher {
         $objView = new $strViewName();
         $this->_objRequest->setView( $objView );
 
-        $this->_arrMvc['module'] = $this->_objRequest->getParam('module', 'default');
-        $this->_arrMvc['controller'] = $this->_objRequest->getParam('controller', 'index');
-        $this->_arrMvc['action'] = $this->_objRequest->getParam('action', 'index');
+        $this->_arrMvc['mod'] = $this->_objRequest->getParam('mod', 'default');
+        $this->_arrMvc['ctrl'] = $this->_objRequest->getParam('ctrl', 'index');
+        $this->_arrMvc['act'] = $this->_objRequest->getParam('act', 'index');
         /**
          * 过滤输入数据
          */
-        $this->_arrMvc['module'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['module']);
-        $this->_arrMvc['controller'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['controller']);
-        $this->_arrMvc['action'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['action']);
+        $this->_arrMvc['mod'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['mod']);
+        $this->_arrMvc['ctrl'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['ctrl']);
+        $this->_arrMvc['act'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['act']);
 	
         do {
-            $strModuleName = ucfirst($this->_arrMvc['module']);
-            $strControllerName = $strModuleName . '_' . ucfirst( $this->_arrMvc['controller'] );
-            $strActionName = $this->_arrMvc['action'] . "Action";
-            $this->_objRequest->setParam('module', $strModuleName);
-            $this->_objRequest->setParam('controller', ucfirst($this->_arrMvc['controller']));
-            $this->_objRequest->setParam('action', $this->_arrMvc['action']);
+            $strModuleName = ucfirst($this->_arrMvc['mod']);
+            $strControllerName = $strModuleName . '_' . ucfirst( $this->_arrMvc['ctrl'] );
+            $strActionName = $this->_arrMvc['act'] . "Action";
+            $this->_objRequest->setParam('mod', $strModuleName);
+            $this->_objRequest->setParam('ctrl', ucfirst($this->_arrMvc['ctrl']));
+            $this->_objRequest->setParam('act', $this->_arrMvc['act']);
             if ( ! class_exists($strControllerName) ) {
                 $strModuleDir = self::$_arrOption['mdir'] . "/" . $strModuleName;
-                $strControllerFile = $strControllerDir . "/" . ucfirst($this->_arrMvc['controller']) . ".php";
+                $strControllerFile = $strControllerDir . "/" . ucfirst($this->_arrMvc['ctrl']) . ".php";
                 if ( ! is_dir( $strModuleDir ) ) {
-                    throw new Crab_Exception( "module dir: {$strModuleDir} doesn`t exist" );
+                    throw new Crab_Exception( "modle dir: {$strModuleDir} doesn`t exist" );
                 }
                 if ( ! is_dir( $strControllerDir ) ) {
                     throw new Crab_Exception(" controller dir: {$strControllerDir} doesn`t exist ");
@@ -183,9 +183,9 @@ class Crab_Dispatcher {
         if ($this->_objRequest->hasViewRender() === false) {
             echo $this->_strOutput;
         } else {
-			$strSubTplKey = $this->_arrMvc['module'] . '_' 
-						  . $this->_arrMvc['controller'] . '_' 
-						  . $this->_arrMvc['action'];
+			$strSubTplKey = $this->_arrMvc['mod'] . '_' 
+						  . $this->_arrMvc['ctrl'] . '_' 
+						  . $this->_arrMvc['act'];
         	$strSubTplName = $this->_objRequest->getSubTpl( $strSubTplKey );            
             if( strlen( $strSubTplName ) > 0 ){
             	$objView->setSubTpl($strSubTplKey, $strSubTplName);
@@ -215,4 +215,3 @@ class Crab_Dispatcher {
         $this->dispatch( $objRequest );        
     }
 }
-
