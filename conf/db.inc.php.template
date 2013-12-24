@@ -1,0 +1,29 @@
+<?php
+/**
+ * @var 数据库配置文件
+ *    支持多主多从便于读写分离
+ * 
+ * @author allenhaozi@gmail.com
+ */
+$arrDbConfig = array(
+	'CRAB_DB_3306' => array(
+		/** 此处key 单词拼写是 master */
+		'master' => array(
+			array(
+				'host' => '127.0.0.1','port' => '3306','username' => 'demo','password' => '123456',
+			),
+			array(
+				'host' => '127.0.0.1','port' => '3306','username' => 'demo','password' => '123456',
+			),		
+		),
+		/** 此处key 单词拼写是 slave */
+		'slave' => array(
+			array(
+				'host' => '127.0.0.1','port' => '3306','username' => 'demo','password' => '123456',
+			),
+			array(
+				'host' => '127.0.0.1','port' => '3306','username' => 'demo','password' => '123456',
+			)
+		),
+	),
+);
