@@ -17,7 +17,7 @@ require_once APP_PATH . '/conf/conf.inc.php';
 define( 'PHP_LIBS_PATH', APP_PATH . '/libs' );
 
 /** 日志路径 */
-define( 'LOG_PATH', APP_PATH . '/../var/' . APP_NAME );
+define( 'LOG_PATH', APP_PATH . '/../../var/' . APP_NAME );
 
 
 /** include path */
