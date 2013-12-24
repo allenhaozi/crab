@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer
+END
+Mock.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer/Mock.php
+END
+Null.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer/Null.php
+END
+Stream.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer/Stream.php
+END
+Syslog.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer/Syslog.php
+END
+Mail.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer/Mail.php
+END
+Abstract.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer/Abstract.php
+END
+Firebug.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer/Firebug.php
+END
+Db.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/app/ecom/shifen/sf-crm/!svn/ver/42831/trunk/sf-bridge2/bridge-lib/Zend/Log/Writer/Db.php
+END
