@@ -1,8 +1,6 @@
 <?php
 /**
- * 
- *
- * @author mahao01@baidu.com
+ * @author allenhaozi@gmail.com
  */
 class Crab_Exception extends Exception {
 
@@ -31,5 +29,3 @@ class Crab_Exception extends Exception {
 	}
 
 }
-
-

@@ -1,9 +1,8 @@
 <?php
 /**
- * bridge-web-im 模块入口文件
+ * app 模块入口文件
  *
- * @author mahao01@baidu.com
- * @date Fri Nov 15 21:01:22 CST 2013
+ * @author allenhaozi@gmail.com
  */
 
 require_once( dirname(__FILE__) . '/common/env_init.php' );
@@ -12,6 +11,7 @@ try {
 	$objDispatcher = Crab_Dispatcher::getInstance (); 
 	$objDispatcher->run();
 } catch ( Exception $ex ) { 
-	dump( $ex->getMessage() );
+	Crab_Log::Log( 'error', 'INDEX', $ex->getMessage() );
+	header( 'Location: http://www.baidu.com/search/error.html' );
 	exit;
 }

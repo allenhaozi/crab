@@ -5,8 +5,7 @@
  * Memcached接口，支持热备
  * 
  * @category Crab
- * @author songqi<songqi@baidu.com>
- * @modify mahao01@baidu.com
+ * @author allenhaozi@baidu.com
  */
 class Crab_Memcached {
 	/**
@@ -128,7 +127,6 @@ class Crab_Memcached {
 	 *
 	 * @param string $strKeyPre mc key
 	 * @return array/false  
-	 * @author mahao01@baidu.com
 	 */
 	public function getSliceData( $strKeyPre )
 	{
@@ -169,7 +167,6 @@ class Crab_Memcached {
 	 * @param string $strKeyPre
 	 * @param array $arrData  
 	 * @return boolean 
-	 * @author mahao01@baidu.com
 	 */
 	public function setSliceData( $strKeyPre, $arrData, $intFlag = 0, $intExpire = 3600 )
 	{
