@@ -10,3 +10,5 @@ experience,feel and summary after having worked three years as a php coder
 crab + thinkphp db
 
 thanks songqi and liu21st@gmail.com 
+
+email : allenhaozi@gmail.com
