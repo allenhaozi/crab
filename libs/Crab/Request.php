@@ -6,9 +6,8 @@
  *
  * @category Crab
  * @package Crab_Controller
- * @author songqi<songqi@baidu.com>
- * @version 1.0
- *
+ * @author songqi
+ * @modify allenhaozi@gmail.com
  */
 /**
  * Crab_View_Interface
@@ -18,18 +17,6 @@ require_once ('Crab/View/Interface.php');
  * Crab_View
  */
 require_once ('Crab/View.php');
-/**
- * Crab_Controller_Request
- *
- * Request类，Request类的最主要作用是可以获取请求参数，包括$_POST和$_GET
- * 可以通过setInput方法为Request类设置参数，之后在获取参数时，优先取Input中的
- * 也就是说，Request类将可以模拟一个页面的请求。
- *
- * @category Crab
- * @package Crab_Controller
- * @author songqi<songqi@baidu.com>
- * @version 1.0
- */
 class Crab_Request {
     /**
      * 对象构造时传入的输入参数

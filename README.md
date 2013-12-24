@@ -12,3 +12,4 @@ crab + thinkphp db
 thanks songqi and liu21st@gmail.com 
 
 email : allenhaozi@gmail.com
+
