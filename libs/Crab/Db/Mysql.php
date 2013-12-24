@@ -3,6 +3,7 @@
  * Mysql数据库驱动类
  * 
  * @author liu21st@gmail.com
+ * @modify allenhaozi@gmail.com
  */
 class Crab_Db_Mysql extends Crab_Db_Service
 {

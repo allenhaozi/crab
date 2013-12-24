@@ -9,6 +9,7 @@ $arrDbConfig = array(
 	'CRAB_DB_3306' => array(
 		/** 此处key 单词拼写是 master */
 		'master' => array(
+			/** 如果是一主库 只写一个数组即可 */
 			array(
 				'host' => '127.0.0.1','port' => '3306','username' => 'demo','password' => '123456',
 			),

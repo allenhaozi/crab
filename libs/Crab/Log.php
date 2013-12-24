@@ -11,15 +11,7 @@
  * Zend_Log
  */
 require_once("Zend/Log.php");
-/**
- * Util_Log
- * 
- * 日志记录类，使用Zend_Log记录日志,主要用于修复Crab_Log并发的bug
- * 
- * @category B
- * @author quanwei<quanwei@baidu.com>
- *
- */
+ 
 class Crab_Log {
     /**
      * Zend_Log对象的数组
@@ -128,7 +120,7 @@ class Crab_Log {
             $strIp = '-';
         }
         //chr(9)表示tab键
-        $strData = $strTm . chr ( 9 ) . $strReqId . chr ( 9 ) . $strIp . chr ( 9 ) . $strOpName . chr ( 9 ) . $strParams . chr ( 9 ) . $strPlace . chr ( 10 );
+        $strData = $strTm.chr(9).$strReqId.chr(9).$strIp.chr(9).$strOpName.chr(9).$strParams.chr(9).$strPlace . chr ( 10 );
         
         $objLogHandle->notice ( $strData );       
 	}

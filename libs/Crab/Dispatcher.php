@@ -3,7 +3,7 @@
  * dispatcher
  *
  * @author songqi
- * @modify hao.ma.se7en@gmail.com
+ * @modify allenhaozi@gmail.com
  */
 /**
  * Crab_Request

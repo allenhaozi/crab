@@ -36,9 +36,9 @@ class Crab_Db_Service {
     // 数据库连接参数配置
     protected $config     = '';
 
-	/** 连接主库 value 与 db.inc.php 中的主从key吻合*/
+	/** 连接主库 value 与 db.inc.php 中的主库key吻合*/
 	protected $master = 'master';
-	/** 连接从库 value 与 db.inc.php 中的主从key吻合*/
+	/** 连接从库 value 与 db.inc.php 中的主库key吻合*/
 	protected $slave = 'slave';
 	/** 当前连接类型 主库/从库 */
 	protected $linkType = null;

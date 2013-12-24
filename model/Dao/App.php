@@ -9,11 +9,11 @@ class Dao_App extends Crab_Model
 	public function demo()
 	{
 		/** select */
-		//$this->getAppList();
+		$this->getAppList();
 		/** insert */
 		//$this->save();
 		/** update */
-		$this->update();
+		//$this->update();
 		dump( $this->getLastSql() );
 		exit;
 	}

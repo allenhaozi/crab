@@ -4,10 +4,7 @@
  *
  * Smarty视图类文件
  *
- * @category Crab
- * @package Crab_View
  * @author songqi<songqi@baidu.com>
- * @version 1.0
  *
  */
 /**
@@ -30,16 +27,7 @@ require_once ('Crab/Request.php');
  * Crab_Controller_Dispatcher
  */
 require_once ('Crab/Dispatcher.php');
-/**
- * Crab_View_Smarty
- *
- * 视图类
- *
- * @category Crab
- * @package Crab_View
- * @author songqi<songqi@baidu.com>
- * @version 1.0
- */
+
 class Crab_View_Smarty extends Smarty implements Crab_View_Interface {
     /**
      * 当前访问的Action
@@ -97,13 +85,13 @@ class Crab_View_Smarty extends Smarty implements Crab_View_Interface {
     public function output() {
     	$strSubTplName = '';
     	if (is_array($this->_arrKeySubTplMap)) {
-    		$key = $this->_arrMvc['module'] . "_" . $this->_arrMvc['controller'] . "_" . $this->_arrMvc['action'];
+    		$key = $this->_arrMvc['mod'] . "_" . $this->_arrMvc['ctrl'] . "_" . $this->_arrMvc['act'];
     		$key = strtolower($key); 
     		if ($this->_arrKeySubTplMap[$key]) {
     			$strSubTplName = $this->_arrKeySubTplMap[$key];
     		}
     	}
-        $strViewFile = ucfirst($this->_arrMvc['module']) . "/" . ucfirst($this->_arrMvc['controller']) . "/" . ucfirst($this->_arrMvc['action']);
+        $strViewFile = ucfirst($this->_arrMvc['mod']) . "/" . ucfirst($this->_arrMvc['ctrl']) . "/" . ucfirst($this->_arrMvc['act']);
         if ($strSubTplName) {
         	$strViewFile .= "-{$strSubTplName}";
         }
@@ -143,9 +131,9 @@ class Crab_View_Smarty extends Smarty implements Crab_View_Interface {
      * @param boolean $bolRepeat
      */
     public function showBlock($arrParams, $strContent, &$objSmarty, &$bolRepeat){
-        $objRequest = new Crab_Controller_Request();
+        $objRequest = new Crab_Request();
         $objRequest->setInput($arrParams);
-        $objDispatcher = Crab_Controller_Dispatcher::getInstance();
+        $objDispatcher = Crab_Dispatcher::getInstance();
         ob_start();
         $objDispatcher->dispatch($objRequest);
         $strOutput = ob_get_clean();

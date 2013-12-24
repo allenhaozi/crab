@@ -1,29 +1,28 @@
 <?php
 /**
- * 
  *
- *
+ * @author allenhaozi@gmail.com
  */
 class Crab_ErrorCode
 {
 	/** 未知错误 */
-	const API_EC_UNKNOW = 1;
+	const CRAB_EC_UNKNOW = 1;
 	/** 无效APP_ID */
-	const API_INVALIDATE_APPID = 2;
+	const CRAB_INVALIDATE_APPID = 2;
 
 	/**
 	 * 错误码对应错误信息
 	 */
-	public static $arrApiError = array(
-		self::API_EC_UNKNOW => 'Unknown error',
-		self::API_EC_INVALID_APP_ID => 'App_Id %s is not invalid',
+	public static $arrError = array(
+		self::CRAB_EC_UNKNOW => 'Unknown error',
+		self::CRAB_EC_INVALID_APP_ID => 'App_Id %s is not invalid',
 	);
 
 	/**
 	 * 错误码对应错误信息 中文
 	 */
-	public static $arrCnApiError = array(
-		self::API_EC_UNKNOW => '未知错误',
+	public static $arrCnError = array(
+		self::CRAB_EC_UNKNOW => '未知错误',
 	);
 
 	/**
@@ -33,10 +32,10 @@ class Crab_ErrorCode
 	 * 
 	 */
 	public static function getErrMsg( $intErrorCode ){
-		if( isset( self::$arrApiError[ $intErrorCode ]  ) ) {
-			return self::$arrApiError[ $intErrorCode ];
+		if( isset( self::$arrError[ $intErrorCode ]  ) ) {
+			return self::$arrError[ $intErrorCode ];
 		} else {
-			return self::$arrApiError[ self::API_EC_UNKNOW ];
+			return self::$arrError[ self::CRAB_EC_UNKNOW ];
 		} 
 	}
 	/**
@@ -46,14 +45,14 @@ class Crab_ErrorCode
 	 * @param mix 替换的参数值
 	 */
 	public static function getMsg( $intErrorCode, $mixValue = null ){
-		if( isset( self::$arrApiError[ $intErrorCode ]  ) ) {
+		if( isset( self::$arrError[ $intErrorCode ]  ) ) {
 			if( $mixValue !== null )
-				$strMsg = sprintf( self::$arrApiError[ $intErrorCode ] , $mixValue );
+				$strMsg = sprintf( self::$arrError[ $intErrorCode ] , $mixValue );
 			else 
-				$strMsg = str_replace( '%s', '', self::$arrApiError[ $intErrorCode ] );	
+				$strMsg = str_replace( '%s', '', self::$arrError[ $intErrorCode ] );	
 			return $strMsg;
 		} else {
-			return self::$arrApiError[ self::API_EC_UNKNOW ];
+			return self::$arrError[ self::CRAB_EC_UNKNOW ];
 		}
 	} 
 
@@ -64,10 +63,10 @@ class Crab_ErrorCode
 	 * @param mix 替换的参数值
 	 */
 	public static function getCnMsg( $intErrorCode ){
-		if( isset( self::$arrApiError[ $intErrorCode ]  ) ) {
-			return self::$arrCnApiError[ $intErrorCode ];
+		if( isset( self::$arrError[ $intErrorCode ]  ) ) {
+			return self::$arrCnError[ $intErrorCode ];
 		} else {
-			return self::$arrApiError[ self::API_EC_UNKNOW ];
+			return self::$arrError[ self::CRAB_EC_UNKNOW ];
 		}
 	}
-}/
+}

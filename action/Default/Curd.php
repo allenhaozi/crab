@@ -8,5 +8,3 @@ class Default_Curd extends Crab_Action
 		exit;
 	}
 }
-
-
