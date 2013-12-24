@@ -2,14 +2,9 @@
 /**
  * bridge debug log 
  *    
- * bridge-web端使用 
- *    1) 路径:  bw-source/inc/common.php 
- *    2) 引用:　在cfg.inc.php require_once('common.php')  
- *    3) 使用:  在代码中直接  TT( $var )
  *    4) 查看:  tailf /home/{$user}/var/bridge_debug.log
  * 
- * @author mahao01@baidu.com
- * @date Thu Jun 27 11:34:17 CST 2013
+ * @author allenhaozi@gmail.com
  */
 
 /** 文件最大限制 M 默认256M */
@@ -62,7 +57,7 @@ function TT( $mixMsg ){
 		} 		
 	}
 	/** log 文件名 */	
-	$file = $dir . 'bridge_debug.log';
+	$file = $dir . 'debug.log';
 
 	if( ! is_file( $file ) ){
 		`touch $file`;

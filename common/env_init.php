@@ -1,25 +1,23 @@
 <?php
 /*
- * bridge-web-im 初始化 
+ * app 初始化 
  * 
- * @author mahao01@baidu.com 
- * @date Fri Nov 15 21:00:47 CST 2013
+ * @author allenhaozi@gmail.com 
  */
 
 define( 'APP_NAME', 'crab' );
-/** 商桥web 根目录 shifen */
-define( 'ROOT_PATH', dirname (  dirname( __FILE__ ) ) );
+/** App root path */
+define( 'APP_PATH', dirname (  dirname( __FILE__ ) ) );
 
-require_once ROOT_PATH . '/conf/common.php';
+require_once APP_PATH . '/conf/common.php';
 
-require_once ROOT_PATH . '/conf/conf.inc.php';
+require_once APP_PATH . '/conf/conf.inc.php';
 
-/** 商桥web php类库文件 */
-define( 'PHP_LIBS_PATH', ROOT_PATH . '/libs' );
+/** App php类库文件 */
+define( 'PHP_LIBS_PATH', APP_PATH . '/libs' );
 
-define( 'APP_PATH', ROOT_PATH );
 /** 日志路径 */
-define( 'LOG_PATH', '' );
+define( 'LOG_PATH', APP_PATH . '/../var/' . APP_NAME );
 
 
 /** include path */
