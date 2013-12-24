@@ -93,14 +93,6 @@ class Crab_Dispatcher {
             $this->_objRequest = new Crab_Request();
         }
 
-        $strViewName = self::$_arrOption['view'];
-
-        if ( ! class_exists( $strViewName ) ) {
-            throw new Crab_Exception("view class: {$strViewName} dosn`t exist");
-        }
-        $objView = new $strViewName();
-        $this->_objRequest->setView( $objView );
-
         $this->_arrMvc['mod'] = $this->_objRequest->getParam('mod', 'default');
         $this->_arrMvc['ctrl'] = $this->_objRequest->getParam('ctrl', 'index');
         $this->_arrMvc['act'] = $this->_objRequest->getParam('act', 'index');
@@ -118,7 +110,7 @@ class Crab_Dispatcher {
             $this->_objRequest->setParam('mod', $strModuleName);
             $this->_objRequest->setParam('ctrl', ucfirst($this->_arrMvc['ctrl']));
             $this->_objRequest->setParam('act', $this->_arrMvc['act']);
-            if ( ! class_exists($strControllerName) ) {
+            if ( ! class_exists( $strControllerName ) ){
                 $strModuleDir = self::$_arrOption['mdir'] . "/" . $strModuleName;
                 $strControllerFile = $strControllerDir . "/" . ucfirst($this->_arrMvc['ctrl']) . ".php";
                 if ( ! is_dir( $strModuleDir ) ) {
@@ -130,13 +122,13 @@ class Crab_Dispatcher {
                 if ( ! is_file( $strControllerFile ) ) {
                     throw new Crab_Exception("controller file: {$strControllerFile} doesn`t exist");
                 }
-                require_once($strControllerFile);
+                require_once( $strControllerFile );
                 if ( ! class_exists( $strControllerName ) ) {
                     throw new Crab_Exception("controller class: {$strControllerName} doesn`t exist");
                 }
             }
 
-			/** initial controller Crab_Controller_Request */	
+			/** initial controller pass the Crab_Request */	
             $objController = new $strControllerName( $this->_objRequest );
 
             if ( ! method_exists( $objController, $strActionName ) ){
@@ -144,9 +136,8 @@ class Crab_Dispatcher {
             }
 			
             ob_start();
-			/** predispatch pass request function */
+			/** predispatch pass pass the action name */
             $objController->preDispatch( $strActionName );
-
 			/** predispatch forward */
             $arrForward = $objController->getForward();
 			/** unset objController _arrForward */
@@ -183,6 +174,13 @@ class Crab_Dispatcher {
         if ($this->_objRequest->hasViewRender() === false) {
             echo $this->_strOutput;
         } else {
+			$strViewName = self::$_arrOption['view'];
+			if( ! class_exists( $strViewName ) ) {
+				throw new Crab_Exception("view class: {$strViewName} dosn`t exist");
+			}
+			$objView = new $strViewName();
+			$this->_objRequest->setView( $objView );
+
 			$strSubTplKey = $this->_arrMvc['mod'] . '_' 
 						  . $this->_arrMvc['ctrl'] . '_' 
 						  . $this->_arrMvc['act'];

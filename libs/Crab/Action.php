@@ -78,7 +78,7 @@ class Crab_Action
 	/**
 	 * 获得请求对象
 	 *
-	 * @return Crab_Controller_Request
+	 * @return Crab_Request
 	 */
 	public function getRequest() {
 		if ( ! $this->_objRequest instanceof Crab_Request ) {
@@ -148,4 +148,3 @@ class Crab_Action
 		exit;
 	}
 }
-
