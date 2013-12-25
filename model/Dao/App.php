@@ -27,10 +27,6 @@ class Dao_App extends Crab_Model
 		/** 指定field */
 		//$arrList = $this->field('id,app_secret,app_name')->where('id>2004')->select();
 
-		dump( $arrList );
-		$sql = $this->getLastSql();
-		dump( $sql );
-		exit;
 		return $arrList;
 	}
 	

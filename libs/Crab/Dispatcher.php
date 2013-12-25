@@ -14,7 +14,7 @@ require_once ('Crab/Request.php');
  */
 require_once ('Crab/View.php');
 /**
- * Crab_Exception
+ * Exception
  */
 require_once ('Crab/Exception.php');
 
@@ -82,7 +82,7 @@ class Crab_Dispatcher {
      * distribute by the request
      *
      * @param Crab_Request objRequest  
-     * @throws Crab_Exception
+     * @throws Exception
      */
 	public function dispatch( Crab_Request $objRequest = null )
    {
@@ -92,6 +92,13 @@ class Crab_Dispatcher {
         } else {
             $this->_objRequest = new Crab_Request();
         }
+		
+		$strViewName = self::$_arrOption['view'];
+		if( ! class_exists( $strViewName ) ) {
+			throw new Exception("view class: {$strViewName} dosn`t exist");
+		}
+		$objView = new $strViewName();
+		$this->_objRequest->setView( $objView );
 
         $this->_arrMvc['mod'] = $this->_objRequest->getParam('mod', 'default');
         $this->_arrMvc['ctrl'] = $this->_objRequest->getParam('ctrl', 'index');
@@ -114,17 +121,17 @@ class Crab_Dispatcher {
                 $strModuleDir = self::$_arrOption['mdir'] . "/" . $strModuleName;
                 $strControllerFile = $strControllerDir . "/" . ucfirst($this->_arrMvc['ctrl']) . ".php";
                 if ( ! is_dir( $strModuleDir ) ) {
-                    throw new Crab_Exception( "modle dir: {$strModuleDir} doesn`t exist" );
+                    throw new Exception( "modle dir: {$strModuleDir} doesn`t exist" );
                 }
                 if ( ! is_dir( $strControllerDir ) ) {
-                    throw new Crab_Exception(" controller dir: {$strControllerDir} doesn`t exist ");
+                    throw new Exception(" controller dir: {$strControllerDir} doesn`t exist ");
                 }
                 if ( ! is_file( $strControllerFile ) ) {
-                    throw new Crab_Exception("controller file: {$strControllerFile} doesn`t exist");
+                    throw new Exception("controller file: {$strControllerFile} doesn`t exist");
                 }
                 require_once( $strControllerFile );
                 if ( ! class_exists( $strControllerName ) ) {
-                    throw new Crab_Exception("controller class: {$strControllerName} doesn`t exist");
+                    throw new Exception("controller class: {$strControllerName} doesn`t exist");
                 }
             }
 
@@ -132,7 +139,7 @@ class Crab_Dispatcher {
             $objController = new $strControllerName( $this->_objRequest );
 
             if ( ! method_exists( $objController, $strActionName ) ){
-                throw new Crab_Exception("action: {$strActionName} doesn`t exist");
+                throw new Exception("action: {$strActionName} doesn`t exist");
             }
 			
             ob_start();
@@ -174,14 +181,7 @@ class Crab_Dispatcher {
         if ($this->_objRequest->hasViewRender() === false) {
             echo $this->_strOutput;
         } else {
-			$strViewName = self::$_arrOption['view'];
-			if( ! class_exists( $strViewName ) ) {
-				throw new Crab_Exception("view class: {$strViewName} dosn`t exist");
-			}
-			$objView = new $strViewName();
-			$this->_objRequest->setView( $objView );
-
-			$strSubTplKey = $this->_arrMvc['mod'] . '_' 
+						$strSubTplKey = $this->_arrMvc['mod'] . '_' 
 						  . $this->_arrMvc['ctrl'] . '_' 
 						  . $this->_arrMvc['act'];
         	$strSubTplName = $this->_objRequest->getSubTpl( $strSubTplKey );            

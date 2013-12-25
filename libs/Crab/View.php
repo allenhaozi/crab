@@ -6,7 +6,7 @@
  *
  * @category Crab
  * @package Crab_View
- * @author songqi<songqi@baidu.com>
+ * @author songqi
  * @version 1.0
  *
  */
@@ -14,16 +14,7 @@
  * Crab_View_Exception
  */
 require_once ('Crab/View/Exception.php');
-/**
- * Crab_View
- *
- * 视图类
- *
- * @category Crab
- * @package Crab_View
- * @author songqi<songqi@baidu.com>
- * @version 1.0
- */
+ 
 class Crab_View implements Crab_View_Interface {
     /**
      * module、controller、action名
@@ -92,7 +83,7 @@ class Crab_View implements Crab_View_Interface {
      *
      */
     public function output() {
-        $strViewFile = self::$_arrOption['tdir'] . "/" . ucfirst($this->_arrMvc['module']) . "/" . ucfirst($this->_arrMvc['controller']) . "/" . ucfirst($this->_arrMvc['action']) . ".php";
+        $strViewFile = self::$_arrOption['tdir'] . "/" . ucfirst($this->_arrMvc['mod']) . "/" . ucfirst($this->_arrMvc['ctrl']) . "/" . ucfirst($this->_arrMvc['act']) . ".php";
         if (!is_file($strViewFile)) {
             throw new Crab_View_Exception("view file: {$strViewFile} doesn`t exist");
         }

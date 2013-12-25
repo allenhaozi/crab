@@ -50,4 +50,11 @@ Crab_Dispatcher::setOption (
 		'view' => 'Crab_View_Smarty'
 	)
 );
-
+/** 模板设置 */
+Crab_View_Smarty::setOption(
+	array(
+		'template_dir' => APP_PATH . '/view/tpl',
+		'compile_dir' => APP_PATH . '/view/compiles',
+		'debugging' => true,
+	)
+);
