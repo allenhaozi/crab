@@ -30,13 +30,14 @@ $strIncludePath =
 set_include_path ( $strIncludePath . ':' . get_include_path() );
 
 /** 错误报警信息开关 */
-//error_reporting ( E_ALL & ~ E_NOTICE & ~ E_WARNING );
-ini_set('display_errors','Off');
+error_reporting ( E_ALL & ~ E_NOTICE & ~ E_WARNING );
+//ini_set('display_errors','Off');
 
 /** 设置 auto load */
 require_once "Zend/Loader/Autoloader.php";
 
 Zend_Loader_Autoloader::getInstance ()->setFallbackAutoloader ( true );
+
 
 /** Crab 配置文件 */
 Crab_Config::setConfig( $arrConfig );

@@ -1,1 +1,1 @@
-../../crab_conf/db.inc.php
+/home/mahao01/html/conf/db.inc.php

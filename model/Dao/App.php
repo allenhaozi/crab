@@ -11,7 +11,7 @@ class Dao_App extends Crab_Model
 		/** select */
 		$this->getAppList();
 		/** insert */
-		//$this->save();
+		$this->saveData();
 		/** update */
 		//$this->update();
 		dump( $this->getLastSql() );
@@ -44,18 +44,19 @@ class Dao_App extends Crab_Model
 		$list = $this->where("contact='{$arrRow['contact']}'")->select();
 		dump( $list );
 	}
-	public function save()
+	public function saveData()
 	{
 		$arrRow['contact'] = 'mahao' . time();
+		$arrRow['contact'] = 'mahao';
 		$arrRow['app_secret'] = 'aaf58b5ef3ab3b90e2fa8b3d42c7efe5';
 		$arrRow['desc'] = date('Ymd H:i:s') . ' test demo '; 
 		$arrRow['c_time'] = time();
 		$arrRow['app_name'] = 'demo';
-		$arrRow['product'] = 'demo_product';
 		/** 存储数据 */
 		$r = $this->data( $arrRow )->add();
-		$this->add( $arrRow );
+		//$this->add( $arrRow );
 		dump( $r );
+		dump( $this->error );
 		$list = $this->where("contact='mahao01@baidu.com'")->select();
 		dump( $list );
 	}
@@ -71,8 +72,8 @@ class Dao_App extends Crab_Model
 	{
 		list( $intId ) = func_get_args();
 		return array(
-			self::DB_SERV => 'CRAB_DB_6602',
-			self::DB_NAME => 'brg_openapi',
+			self::DB_SERV => 'CRAB_DB_8076',
+			self::DB_NAME => 'crab',
 			self::DB_TABLE => 'api_app',
 		);
 	}	

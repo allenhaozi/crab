@@ -11,7 +11,7 @@ class Controller extends Crab_Action
 	 *   1) 根据服务类型做 Forward 内部跳转 
 	 * 
 	 */
-	public function preDispatch()
+	public function preDispatch( $strAction )
 	{
 		
 	}

@@ -89,7 +89,7 @@ abstract class Crab_Model implements Crab_Db_Interface
 			 */
 			$arrDbConfig = $this->__define();
 			if( empty( $arrDbConfig[self::DB_TABLE] ) ){
-				throw new Exception( __CLASS__ . ' table name is empty' );
+				throw new Exception( 'table name is undefined !' );
 			}
 			/** 记录表名 */
 			$this->trueTableName = $arrDbConfig[self::DB_TABLE];
@@ -101,13 +101,13 @@ abstract class Crab_Model implements Crab_Db_Interface
 			if( empty( $strDbName ) )
 				$strDbName = Crab_Config::getConfig( 'CRAB_DEFAULT_DB_NAME' );
 			if( empty( $strDbName ) ){
-				throw new Exception( __CLASS__ . ' db name is empty ' );
+				throw new Exception( ' database name is undefined ! ' );
 			}
 			/** 记录数据库名 */
 			$this->dbName = $strDbName;
 			$arrDbInfo = Crab_Config::getConfig( $strDbServer );
 			if( ! is_array( $arrDbInfo ) ){
-				throw new Exception( __CLASS__ . ' db server config is empty ' );
+				throw new Exception( ' db server config is undefined !' );
 			}
 			/** 存入数据库连接信息 host,port,pwd */
 			$arrDbConfig['params'] = $arrDbInfo;
@@ -217,7 +217,7 @@ abstract class Crab_Model implements Crab_Db_Interface
         }elseif(isset($this->_scope[$method])){// 命名范围的单独调用支持
             return $this->scope($method,$args[0]);
         }else{
-			Crab_Log::Log( 'error',__CLASS__,$method . '_METHOD_NOT_EXIST_' );
+			throw new Exception( $method . ' METHOD_NOT_EXIST ! ' );
             return;
         }
     }
@@ -303,7 +303,10 @@ abstract class Crab_Model implements Crab_Db_Interface
                 return $insertId;
             }
             $this->_after_insert($data,$options);
-        }
+        } else {
+			//错误信息写入到error中
+			$this->error = mysql_error();
+		}
         return $result;
     }
     // 插入数据前的回调方法
@@ -329,7 +332,9 @@ abstract class Crab_Model implements Crab_Db_Interface
             if($insertId) {
                 return $insertId;
             }
-        }
+        } else {
+			$this->error = mysql_error();	
+		}
         return $result;
     }
 
@@ -401,7 +406,9 @@ abstract class Crab_Model implements Crab_Db_Interface
         if(false !== $result) {
             if(isset($pkValue)) $data[$pk]   =  $pkValue;
             $this->_after_update($data,$options);
-        }
+        } else {
+			$this->error = mysql_error();	
+		}
         return $result;
     }
     // 更新数据前的回调方法
@@ -447,7 +454,9 @@ abstract class Crab_Model implements Crab_Db_Interface
             $data = array();
             if(isset($pkValue)) $data[$pk]   =  $pkValue;
             $this->_after_delete($data,$options);
-        }
+        } else {
+			$this->error = mysql_error();	
+		}
         // 返回删除记录个数
         return $result;
     }

@@ -12,6 +12,7 @@ try {
 	$objDispatcher->run();
 } catch ( Exception $ex ) { 
 	Crab_Log::Log( 'error', 'INDEX', $ex->getMessage() );
-	header( 'Location: http://www.baidu.com/search/error.html' );
+	var_dump( $ex->getMessage() );
+	//header( 'Location: http://www.baidu.com/search/error.html' );
 	exit;
 }
