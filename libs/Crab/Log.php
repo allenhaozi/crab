@@ -6,6 +6,7 @@
  * 
  * @category Crab
  * @author songqi<songqi@baidu.com>
+ * @modify allenhaozi@gmail.com
  */
 /**
  * Zend_Log
@@ -91,7 +92,7 @@ class Crab_Log {
      * @param  string strOpName 操作的名称，包括
      * @param array arrParams 参数，包括url或者插入数据库参数
      */
-    public static function Log($strLogType, $strOpName, $arrParams = null, $strPlace = null) {        
+    public static function Log($strLogType, $strOpName, $mixParam = null, $strPlace = null) {        
 
         if (is_null ( $strLogType )) {
             $strLogType = 'default';
@@ -103,13 +104,23 @@ class Crab_Log {
         $strTm = '[' . date ( 'Y-m-d H:i:s' ) . ']';
 		
         $strParams = '-';
-        if ( ! empty( $arrParams ) ){
-			$strParams = json_encode( $arrParams );
+        if ( is_string( $mixParam ) || is_numeric( $mixParam ) ){
+			$strParams = $arrParams;
+		} elseif( is_object( $mixParam ) || is_array( $mixParam ) || is_resource( $mixParam ) ) {
+			$strParams = serialize( $arrParams );	
+		} elseif( is_bool( $mixParam ) ){
+			if( $mixParam )
+				$strParams = 'true';		
+			else 
+				$strParams = 'false';
+		} elseif( is_null( $mixParam ) ){
+			$strParams = 'null';	
 		}
         $arrOption = self::getOptions ();
+		$strLogId = $arrOption['logid'];
 
-    	if (is_null ( $strReqId )) {
-            $strReqId = '-';
+    	if (is_null ( $strLogId )) {
+            $strLogId = '-';
         }
 
         if (is_null ( $strPlace )) {
@@ -120,7 +131,7 @@ class Crab_Log {
             $strIp = '-';
         }
         //chr(9)表示tab键
-        $strData = $strTm.chr(9).$strReqId.chr(9).$strIp.chr(9).$strOpName.chr(9).$strParams.chr(9).$strPlace . chr ( 10 );
+        $strData = $strTm.chr(9).$strLogId.chr(9).$strIp.chr(9).$strOpName.chr(9).$strParams.chr(9).$strPlace . chr ( 10 );
         
         $objLogHandle->notice ( $strData );       
 	}

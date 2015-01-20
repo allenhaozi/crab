@@ -14,6 +14,9 @@ class Dao_App extends Crab_Model
 		$this->saveData();
 		/** update */
 		//$this->update();
+		$arr = array( 'lsdjflds', 'ljldsfs','你好' );
+		Crab_Log::Log( 'common','xxx',$arr );
+		throw new Crab_Exception();
 		dump( $this->getLastSql() );
 		exit;
 	}

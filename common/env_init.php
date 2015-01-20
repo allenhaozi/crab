@@ -44,7 +44,8 @@ Crab_Config::setConfig( $arrConfig );
 /** Crab DB配置文件 */
 Crab_Config::mergeConfig( $arrDbConfig );
 /** Log 目录 */
-Crab_Log::setOptions ( array ('logdir' => LOG_PATH ) );
+$strLogId = md5(base64_encode(pack('N6',mt_rand(),mt_rand(),mt_rand(),mt_rand(),mt_rand(),uniqid()))); 
+Crab_Log::setOptions ( array ('logdir' => LOG_PATH, 'logid' => $strLogId ) );
 Crab_Dispatcher::setOption ( 
 	array (
 		'mdir' => APP_PATH . '/action',

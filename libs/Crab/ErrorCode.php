@@ -8,7 +8,7 @@ class Crab_ErrorCode
 	/** 未知错误 */
 	const CRAB_EC_UNKNOW = 1;
 	/** 无效APP_ID */
-	const CRAB_INVALIDATE_APPID = 2;
+	const CRAB_EC_INVALID_APP_ID = 2;
 
 	/**
 	 * 错误码对应错误信息

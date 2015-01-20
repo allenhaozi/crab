@@ -25,6 +25,11 @@ class Crab_Exception extends Exception {
 		if( strchr( $strMsg, '%s' ) )
 			$strMsg = str_replace( '%s', '', $strMsg );	
 
+		$strFile = $this->getFile();
+		$intLine = $this->getLine();
+
+		$strMsg = $strFile . '#' . $intLine . '#' . $strMsg;
+
 		parent::__construct( $strMsg, $intCode );
 	}
 
