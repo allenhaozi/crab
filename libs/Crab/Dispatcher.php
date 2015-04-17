@@ -112,20 +112,22 @@ class Crab_Dispatcher {
 	
         do {
             $strModuleName = ucfirst($this->_arrMvc['mod']);
-            $strControllerName = $strModuleName . '_' . ucfirst( $this->_arrMvc['ctrl'] );
+            $strControllerName = $strModuleName . '_Controller_' . ucfirst( $this->_arrMvc['ctrl'] );
             $strActionName = $this->_arrMvc['act'] . "Action";
             $this->_objRequest->setParam('mod', $strModuleName);
             $this->_objRequest->setParam('ctrl', ucfirst($this->_arrMvc['ctrl']));
             $this->_objRequest->setParam('act', $this->_arrMvc['act']);
             if ( ! class_exists( $strControllerName ) ){
                 $strModuleDir = self::$_arrOption['mdir'] . "/" . $strModuleName;
-                $strControllerFile = $strControllerDir . "/" . ucfirst($this->_arrMvc['ctrl']) . ".php";
+				$strControllerDir = $strModuleDir . '/Controller/'; 
+                $strControllerFile = $strControllerDir. "/" . ucfirst($this->_arrMvc['ctrl']) . ".php";
                 if ( ! is_dir( $strModuleDir ) ) {
-                    throw new Exception( "modle dir: {$strModuleDir} doesn`t exist" );
+                    throw new Exception( "module dir: {$strModuleDir} doesn`t exist" );
                 }
-                if ( ! is_dir( $strControllerDir ) ) {
-                    throw new Exception(" controller dir: {$strControllerDir} doesn`t exist ");
+				if ( ! is_dir( $strControllerDir ) ) {
+                    throw new Exception( "controller dir: {$strModuleDir} doesn`t exist" );
                 }
+
                 if ( ! is_file( $strControllerFile ) ) {
                     throw new Exception("controller file: {$strControllerFile} doesn`t exist");
                 }
