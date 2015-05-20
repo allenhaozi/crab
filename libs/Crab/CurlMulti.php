@@ -16,13 +16,20 @@ class Crab_CurlMulti extends Crab_Abstract
 	 * @var array 请求 URL List
 	 */
 	private $arrRequestList = array();
+	/**
+	 * @var array request header data 
+	 */
+	private $arrRequestHead = array();
+
+	private $arrOption = array();
 
 	/**
 	 * @var array curl 请求默认参数
 	 */
-	private $arrOption = array(
+	private $arrInitOption = array(
 		/** 设置cURL允许执行的最长秒数 */
-		CURLOPT_TIMEOUT => 5,
+		CURLOPT_TIMEOUT => 2,
+		CURLOPT_CONNECTTIMEOUT => 1,
 
 		/** 返回响应结果 */
 		CURLOPT_RETURNTRANSFER => 1,
@@ -45,7 +52,7 @@ class Crab_CurlMulti extends Crab_Abstract
 	 * @todo 目前只支持 post 数据
 	 */
 	public function execute(){
-		if( count( $this->arrRequestList ) > 1 ){
+		if( count( $this->arrRequestList ) > 1 && count( $this->getParam() ) > 1 ){
 			$this->rollingCurl();
 		} else {
 			$this->singleCurl();
@@ -55,33 +62,54 @@ class Crab_CurlMulti extends Crab_Abstract
 	 * 单个请求
 	 */
 	public function singleCurl(){
-		$arrServerList = array_values( $this->arrRequestList );
+
+		list($tmpKey,$arrServerList) = each( $this->arrRequestList );
+		
 		if( empty( $arrServerList ) ){
 			throw new Crab_Exception( Crab_ErrCode::EC_INVALID_PARAM, 'CURL_URL_LIST' );
 		}
 		$index = 0;
 		$intServerNum = count( $arrServerList );
+		
+		$arrRetData = $this->getParam();
+		
+		if( ! empty( $arrRetData ) ){
+			/** single request use the first param */
+			list( $key,$arrRet ) = each( array_slice( $arrRetData,0,1) );
+		} else {
+			$key = 0;	
+		}
+		$arrRetHead = $this->getRequestHeader();
+		if( ! empty( $arrRetHead ) ){
+			$arrRetHead = $arrRetHead[$key];	
+		}
+
 		while( true ){
 			if( ( $index + 1 ) > $intServerNum ){
-				throw new Crab_Exception( Crab_ErrCode::EC_FAULT, 'CURL_RETRY_OVERFLOW' );
+				throw new Crab_Exception( Crab_ErrCode::EC_RET_FAIL, 'CURL_RETRY_OVERFLOW' );
 			}
 			$strUrl = $arrServerList[$index];	
-			$ch = curl_init();
-			$this->setRequestUrl( $strUrl );
-			$arrRequestData = $this->getParam();
-			if( ! empty( $arrRequestData ) ){
-				$this->setRequestData( array_shift( $arrRequestData ) );
+			$ch = curl_init( $strUrl );
+			if( ! empty( $arrRet ) ){
+				$this->setRequestData( $arrRet );
 			} 
+			if( ! empty( $arrRetHead ) ){
+				$this->setRequestHeadData( $arrRetHead );	
+			}
+
 			curl_setopt_array( $ch, $this->getOption() );
-			$this->response = curl_exec( $ch );
+			$arrRes = curl_exec( $ch );
 			$arrInfo = curl_getInfo( $ch );
+
 			if( $arrInfo['http_code'] == 200 ){
-				return true;
+				curl_close( $ch );
+				$arrRes = curl_error( $ch[$index] );
+				break;	
 			}
 			$index ++;
 		}
+		$this->setResponse( array( $key => $arrRes ) );
 	}
-
 	/**
 	 * 模拟并发请求
 	 * 
@@ -94,12 +122,19 @@ class Crab_CurlMulti extends Crab_Abstract
 		$handle = curl_multi_init();
 		$arrServerList =  $this->arrRequestList;
 		$arrRequestData = $this->getParam();	
+		$arrRequestHead = $this->getRequestHeader();
 
-		foreach( $arrServerList as $loop => $strUrl){
+		foreach( $arrServerList as $loop => $arrUrl){
+			/** use first url, keep it for exetension */
+			$strUrl = array_shift( $arrUrl );
 			/** 初始化一个 cURL session */
 			$ch[$loop] = curl_init( $strUrl );
-			if( ! empty( $arrRequestData ) ){
+			$this->initOption();
+			if( ! empty( $arrRequestData[$loop] ) ){
 				$this->setRequestData( $arrRequestData[$loop] );
+			}
+			if( !empty( $arrRequestHead[$loop] ) ){
+				$this->setRequestHeadData( $arrRequestHead[$loop]  );	
 			}
 			/** 单个cURL 信息 */
 			curl_setopt_array( $ch[$loop], $this->getOption() );
@@ -114,10 +149,12 @@ class Crab_CurlMulti extends Crab_Abstract
 		} while ( $running );
 		/** 结果集 */ 
 		foreach( $arrServerList as $index => $value ){
+			
 			$arrHttpInfo = curl_getinfo( $ch[$index] );
+		
 			if( $arrHttpInfo['http_code'] != 200 ){
 				/** @todo 请求失败暂不处理*/
-				$arrError = curl_error( $ch[$index] );
+				$arrRes[$index] = curl_error( $ch[$index] );
 			}
 			$arrRes[$index] = curl_multi_getcontent( $ch[$index] );
 			curl_close( $ch[$index] );
@@ -131,42 +168,67 @@ class Crab_CurlMulti extends Crab_Abstract
 	/**
 	 * 设置单个请求的URL
 	 */
-	public function setRequestUrl( $strUrl ){
+	private function setRequestUrlData( $strUrl ){
 		$this->arrOption[CURLOPT_URL] = $strUrl;
 	}
-
 	/**
-	 * 设置请求的参数
-	 *
-	 * @param array $arrData 
-	 *
-	 */	 
-	public function setRequestData( $arrData ){
-		if( count( $arrData ) < 1 ){
-			throw new Crab_Exception( Crab_ErrCode::EC_INVAlID_PARAM );
-		}
-		$this->arrOption[ CURLOPT_POST ] = 1;
-		$this->arrOption[ CURLOPT_POSTFIELDS ] = http_build_query( $arrData );
+	 * set request data
+	 * @param array request data
+	 */
+	public function setRequestParam( $arrRet )
+	{
+		$this->setParam( $arrRet );	
 	}
-
+	/**
+	 * set request header data 
+	 * @param array 
+	 */
+	public function setRequestHeader( $arrHeadRet )
+	{
+		$this->arrRequestHead = $arrHeadRet;	
+	}
+	/**
+	 * set request header data 
+	 * @param array 
+	 */
+	private function setRequestHeadData( $arrHeadRet )
+	{
+		if( empty( $arrHeadRet ) ){
+			return false;
+		}
+		foreach( $arrHeadRet as $key => $value ){
+			$arrHeader[] = $key . ':' . $value;	
+		}	
+		$this->arrOption[ CURLOPT_HTTPHEADER ] = $arrHeader;
+	}
+	/**
+	 * get request header data
+	 * @return array 
+	 */
+	public function getRequestHeader()
+	{
+		return $this->arrRequestHead;	
+	}
 	/**
 	 * 设置请求的参数
 	 *
 	 * @param array $arrData 
-	 *
 	 */	 
-	public function setRequestDataByJson( $arrData ){
-		if( count( $arrData ) < 1 ){
+	private function setRequestData( $arrData ){
+		if( empty( $arrData ) ){
 			throw new Crab_Exception( Crab_ErrCode::EC_INVAlID_PARAM );
 		}
+		if( is_array( $arrData ) ){
+			$arrData = http_build_query( $arrData );	
+		}
 		$this->arrOption[ CURLOPT_POST ] = 1;
-		$this->arrOption[ CURLOPT_POSTFIELDS ] = json_encode( $arrData );
+		$this->arrOption[ CURLOPT_POSTFIELDS ] = $arrData;
 	}
 
 	/**
 	 * 设置请求的cookie
 	 */
-	public function setRequestCookie( $strCookie = null ){
+	private function setRequestCookie( $strCookie = null ){
 		$this->arrOption[ CURLOPT_COOKIE ] = $strCookie;
 	}
 	/**
@@ -178,15 +240,28 @@ class Crab_CurlMulti extends Crab_Abstract
 		}			
 	}
 	/**
+	 * initialize request option data		
+	 */
+	private function initOption()
+	{
+		$this->arrOption = $this->arrInitOption;	
+	}
+	/**
 	 * get 请求参数集合 
 	 */
 	public function getOption(){
+		foreach( $this->arrInitOption as $key => $value ){
+		
+			if( ! isset( $this->arrOption[$key] ) ){
+				$this->arrOption[$key] = $value;
+			}		
+		}
 		return $this->arrOption;
 	}
 	/**
 	 * 设置请求的URL 集合
 	 */
-	public function setRequestList( $arrRequestUrl ){
+	public function setRequestUrl( $arrRequestUrl ){
 		$this->arrRequestList = $arrRequestUrl;	
 	}
 	/**
