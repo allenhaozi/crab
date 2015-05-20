@@ -16,7 +16,7 @@ class Crab_Exception extends Exception {
 		if( ! empty( $arrArgv[2] ) ){
 			$strMsg = $arrArgv[2]; 
 		} else {
-			$strMsg = Crab_ErrorCode::getErrMsg( $intCode );	
+			$strMsg = Crab_ErrCode::getErrMsg( $intCode );	
 		}
 		
 		if( ! empty( $mixValue ) )

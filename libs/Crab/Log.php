@@ -105,16 +105,16 @@ class Crab_Log {
 		
         $strParams = '-';
         if ( is_string( $mixParam ) || is_numeric( $mixParam ) ){
-			$strParams = $arrParams;
+			$strParam = $mixParam;
 		} elseif( is_object( $mixParam ) || is_array( $mixParam ) || is_resource( $mixParam ) ) {
-			$strParams = serialize( $arrParams );	
+			$strParam = serialize( $mixParam );	
 		} elseif( is_bool( $mixParam ) ){
 			if( $mixParam )
-				$strParams = 'true';		
+				$strParam = 'true';		
 			else 
-				$strParams = 'false';
+				$strParam = 'false';
 		} elseif( is_null( $mixParam ) ){
-			$strParams = 'null';	
+			$strParam = 'null';	
 		}
         $arrOption = self::getOptions ();
 		$strLogId = $arrOption['logid'];
@@ -131,7 +131,7 @@ class Crab_Log {
             $strIp = '-';
         }
         //chr(9)表示tab键
-        $strData = $strTm.chr(9).$strLogId.chr(9).$strIp.chr(9).$strOpName.chr(9).$strParams.chr(9).$strPlace . chr ( 10 );
+        $strData = $strTm.chr(9).$strLogId.chr(9).$strIp.chr(9).$strOpName.chr(9).$strParam.chr(9).$strPlace . chr ( 10 );
         
         $objLogHandle->notice ( $strData );       
 	}

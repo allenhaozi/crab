@@ -62,9 +62,10 @@ class Crab_CurlMulti extends Crab_Abstract
 	 * 单个请求
 	 */
 	public function singleCurl(){
-
-		list($tmpKey,$arrServerList) = each( $this->arrRequestList );
 		
+		/** record request time begin */	
+		$intTimeBegin = microtime( true ) * 1000;
+		list($tmpKey,$arrServerList) = each( $this->arrRequestList );
 		if( empty( $arrServerList ) ){
 			throw new Crab_Exception( Crab_ErrCode::EC_INVALID_PARAM, 'CURL_URL_LIST' );
 		}
@@ -109,6 +110,9 @@ class Crab_CurlMulti extends Crab_Abstract
 			$index ++;
 		}
 		$this->setResponse( array( $key => $arrRes ) );
+		$intTimeEnd = microtime( true ) * 1000;
+		
+		$this->setProcessTime( array( $key => ( $intTimeEnd - $intTimeBegin ) ) );
 	}
 	/**
 	 * 模拟并发请求
@@ -118,6 +122,8 @@ class Crab_CurlMulti extends Crab_Abstract
 	 */
 	private function rollingCurl(){
 
+		/** record time */
+		$intTimeBegin = microtime( true ) * 1000;
 		/** 并行批处理cURL句柄 */
 		$handle = curl_multi_init();
 		$arrServerList =  $this->arrRequestList;
@@ -157,12 +163,15 @@ class Crab_CurlMulti extends Crab_Abstract
 				$arrRes[$index] = curl_error( $ch[$index] );
 			}
 			$arrRes[$index] = curl_multi_getcontent( $ch[$index] );
+			$intTimeEnd = microtime( true ) * 1000;
+			$arrTime[$index] = $intTimeEnd - $intTimeBegin;
 			curl_close( $ch[$index] );
 		} 
 
 		curl_multi_close( $handle );
 
 		$this->setResponse( $arrRes );
+		$this->setProcessTime( $arrTime );
 	}
 
 	/**

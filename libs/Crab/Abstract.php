@@ -15,6 +15,11 @@ abstract class Crab_Abstract
 	 *
 	 */
 	private $arrResponse = array();
+
+	/**
+	 * @var time consumer
+	 */
+	private $arrTime = array();	
 	/**
 	 * arrParam set 
 	 * @param array $arrRequest request args or property
@@ -41,7 +46,7 @@ abstract class Crab_Abstract
 	 */
 	public function setResponse( $arrParam = array() )
 	{
-		$this->arrResponse = array_merge( $this->arrResponse, $arrParam );	
+		$this->arrResponse = $arrParam;
 	}
 	/**
 	 * arrResponse get
@@ -53,6 +58,25 @@ abstract class Crab_Abstract
 			return $this->arrResponse[$mixKey];	
 		} else {
 			return $this->arrResponse;	
+		}
+	}
+	/**
+	 * arrTime set 
+	 */
+	public function setProcessTime( $arrTime )
+	{
+		$this->arrTime = array_merge( $this->arrTime, $arrTime );	
+	}
+
+	/**
+	 * arrTime get 
+	 */
+	public function getProcessTime( $strKey )
+	{
+		if( isset( $strKey ) ){
+			return $this->arrTime[$strKey];	
+		} else {
+			return $this->arrTime;	
 		}
 	}
 }
