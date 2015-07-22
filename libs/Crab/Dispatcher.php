@@ -35,6 +35,8 @@ class Crab_Dispatcher {
 		'view' => 'Crab_View', 
 		/** action dir */
 		'mdir' => '', 
+        /** default shutdown uri model */
+        'uri_map' => false,
     );
     /**
      * object request 
@@ -103,6 +105,12 @@ class Crab_Dispatcher {
         $this->_arrMvc['mod'] = $this->_objRequest->getParam('mod', 'default');
         $this->_arrMvc['ctrl'] = $this->_objRequest->getParam('ctrl', 'index');
         $this->_arrMvc['act'] = $this->_objRequest->getParam('act', 'index');
+        
+        $bolUri = self::$_arrOption['uri_map'];
+        if( $bolUri ){
+            $this->_arrMvc = $this->parseUri();
+        }
+
         /**
          * 过滤输入数据
          */
@@ -213,5 +221,28 @@ class Crab_Dispatcher {
     public function run() {
         $objRequest = new Crab_Request();
         $this->dispatch( $objRequest );        
+    }
+    /**
+     * parse uri info 
+     */
+    public function parseUri()
+    {
+        $strUri = $_SERVER['REQUEST_URI'];
+		$strUri = array_shift( explode( '?', $strUri ) );
+	
+		$arrUri = explode( '/', $strUri );
+		array_shift( $arrUri );
+		list( $class, $function ) = $arrUri;
+        $arrMvc['mod'] = 'Default'; 
+        if( empty( $class ) ){
+            $class = 'Index'; 
+        }
+        if( empty( $function ) ){
+            $function = 'Index';    
+        }
+        $arrMvc['ctrl'] = $class;
+        $arrMvc['act'] = $function;
+
+        return $arrMvc;
     }
 }
