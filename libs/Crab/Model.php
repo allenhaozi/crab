@@ -82,35 +82,36 @@ abstract class Crab_Model implements Crab_Db_Interface
         static $_db = array();
 		/** 暂不支持多个连接 */
 		$intLinkNum = 0;
+        /** 
+         * 获取配置文件 
+         * 如果model实现类 __define 返回配置数组 则使用 否则使用默认配置
+         */
+        $arrDbConfig = $this->__define();
+        if( empty( $arrDbConfig[self::DB_TABLE] ) ){
+            throw new Exception( 'table name is undefined !' );
+        }
+        /** 记录表名 */
+        $this->trueTableName = $arrDbConfig[self::DB_TABLE];
+        /** db.inc.php db 的key值 */
+        $strDbServer = $arrDbConfig[self::DB_SERV];
+        if( empty( $strDbServer ) )
+            $strDbServer = Crab_Config::getConfig( 'CRAB_DEFAULT_DB_KEY' );
+        $strDbName = $arrDbConfig[self::DB_NAME];
+        if( empty( $strDbName ) )
+            $strDbName = Crab_Config::getConfig( 'CRAB_DEFAULT_DB_NAME' );
+        if( empty( $strDbName ) ){
+            throw new Exception( ' database name is undefined ! ' );
+        }
+        /** 记录数据库名 */
+        $this->dbName = $strDbName;
+        $arrDbInfo = Crab_Config::getConfig( $strDbServer );
+        if( ! is_array( $arrDbInfo ) ){
+            throw new Exception( ' db server config is undefined !' );
+        }
+        /** 存入数据库连接信息 host,port,pwd */
+        $arrDbConfig['params'] = $arrDbInfo;
+
         if( ! isset( $_db[$intLinkNum] ) ) {
-			/** 
-			 * 获取配置文件 
-			 * 如果model实现类 __define 返回配置数组 则使用 否则使用默认配置
-			 */
-			$arrDbConfig = $this->__define();
-			if( empty( $arrDbConfig[self::DB_TABLE] ) ){
-				throw new Exception( 'table name is undefined !' );
-			}
-			/** 记录表名 */
-			$this->trueTableName = $arrDbConfig[self::DB_TABLE];
-			/** db.inc.php db 的key值 */
-			$strDbServer = $arrDbConfig[self::DB_SERV];
-			if( empty( $strDbServer ) )
-				$strDbServer = Crab_Config::getConfig( 'CRAB_DEFAULT_DB_KEY' );
-			$strDbName = $arrDbConfig[self::DB_NAME];
-			if( empty( $strDbName ) )
-				$strDbName = Crab_Config::getConfig( 'CRAB_DEFAULT_DB_NAME' );
-			if( empty( $strDbName ) ){
-				throw new Exception( ' database name is undefined ! ' );
-			}
-			/** 记录数据库名 */
-			$this->dbName = $strDbName;
-			$arrDbInfo = Crab_Config::getConfig( $strDbServer );
-			if( ! is_array( $arrDbInfo ) ){
-				throw new Exception( ' db server config is undefined !' );
-			}
-			/** 存入数据库连接信息 host,port,pwd */
-			$arrDbConfig['params'] = $arrDbInfo;
             $_db[$intLinkNum] = Crab_Db_Service::getInstance( $arrDbConfig );
         }
         // 切换数据库连接
