@@ -4,7 +4,7 @@
  *
  * Smarty视图类文件
  *
- * @author songqi<songqi@baidu.com>
+ * @author songqi
  *
  */
 /**

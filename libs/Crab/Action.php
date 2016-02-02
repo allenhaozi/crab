@@ -5,7 +5,7 @@
  * Action 基类文件
  *
  * @author songqi
- * @modify allenhaozi@gmail.com
+ * @modify allen.mh@alibaba-inc.com
  */
 /**
  * Crab_Request

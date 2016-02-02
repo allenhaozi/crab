@@ -5,8 +5,8 @@
  * 日志记录类
  * 
  * @category Crab
- * @author songqi<songqi@baidu.com>
- * @modify allenhaozi@gmail.com
+ * @author songqi
+ * @modify allenhaozi
  */
 /**
  * Zend_Log
@@ -58,7 +58,7 @@ class Crab_Log {
                 $bolSuc = @mkdir($strDir, 0775, true);               
             }
             if (!$bolSuc && !is_dir($strDir)) {
-                throw new Exception( __CLASS__ . ':日志目录没有设置成正确的目录');
+                throw new Exception( __CLASS__ . 'log dir dose not exist ! ');
            }
         }
         return $strDir;
@@ -106,9 +106,11 @@ class Crab_Log {
         $strParams = '-';
         if ( is_string( $mixParam ) || is_numeric( $mixParam ) ){
 			$strParam = $mixParam;
-		} elseif( is_object( $mixParam ) || is_array( $mixParam ) || is_resource( $mixParam ) ) {
+		} elseif( is_object( $mixParam ) || is_resource( $mixParam ) ) {
 			$strParam = serialize( $mixParam );	
-		} elseif( is_bool( $mixParam ) ){
+		} elseif( is_array( $mixParam ) ){
+			$strParam = http_build_query( $mixParam );	
+		}elseif( is_bool( $mixParam ) ){
 			if( $mixParam )
 				$strParam = 'true';		
 			else 
@@ -116,6 +118,7 @@ class Crab_Log {
 		} elseif( is_null( $mixParam ) ){
 			$strParam = 'null';	
 		}
+		$strParam = '[' . $strParam . ']';	
         $arrOption = self::getOptions ();
 		$strLogId = $arrOption['logid'];
 
@@ -131,7 +134,7 @@ class Crab_Log {
             $strIp = '-';
         }
         //chr(9)表示tab键
-        $strData = $strTm.chr(9).$strLogId.chr(9).$strIp.chr(9).$strOpName.chr(9).$strParam.chr(9).$strPlace . chr ( 10 );
+        $strData = $strTm.chr(9).$strLogId.chr(9).$strIp.chr(9).$strOpName.chr(9).$strParam.chr(9).$strPlace;
         
         $objLogHandle->notice ( $strData );       
 	}

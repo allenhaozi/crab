@@ -3,7 +3,7 @@
  * dispatcher
  *
  * @author songqi
- * @modify allenhaozi@gmail.com
+ * @modify allenhaozi
  */
 /**
  * Crab_Request
@@ -31,11 +31,10 @@ class Crab_Dispatcher {
      * @var array 
      */
     protected static $_arrOption = array(
-		/** default view class */
-		'view' => 'Crab_View', 
-		/** action dir */
-		'mdir' => '', 
-        /** default shutdown uri model */
+        /** default view class */
+        'view' => 'Crab_View', 
+        /** action dir */
+        'mdir' => '', 
         'uri_map' => false,
     );
     /**
@@ -74,8 +73,8 @@ class Crab_Dispatcher {
      *
      * @param array arrOption    配置参数
      */
-	public static function setOption( array $arrOption )
-	{
+    public static function setOption( array $arrOption )
+    {
         foreach( $arrOption as $k => $v ) {
             self::$_arrOption[$k] = $v;
         }
@@ -86,38 +85,38 @@ class Crab_Dispatcher {
      * @param Crab_Request objRequest  
      * @throws Exception
      */
-	public function dispatch( Crab_Request $objRequest = null )
-   {
-		/** initialize request */
+    public function dispatch( Crab_Request $objRequest = null )
+    {
+        /** initialize request */
         if (!is_null($objRequest)) {
             $this->_objRequest = $objRequest;
         } else {
             $this->_objRequest = new Crab_Request();
         }
-		
-		$strViewName = self::$_arrOption['view'];
-		if( ! class_exists( $strViewName ) ) {
-			throw new Exception("view class: {$strViewName} dosn`t exist");
-		}
-		$objView = new $strViewName();
-		$this->_objRequest->setView( $objView );
+
+        $strViewName = self::$_arrOption['view'];
+        if( ! class_exists( $strViewName ) ) {
+            throw new Exception("view class: {$strViewName} dosn`t exist");
+        }
+        $objView = new $strViewName();
+        $this->_objRequest->setView( $objView );
 
         $this->_arrMvc['mod'] = $this->_objRequest->getParam('mod', 'default');
         $this->_arrMvc['ctrl'] = $this->_objRequest->getParam('ctrl', 'index');
         $this->_arrMvc['act'] = $this->_objRequest->getParam('act', 'index');
-        
-        $bolUri = self::$_arrOption['uri_map'];
-        if( $bolUri ){
-            $this->_arrMvc = $this->parseUri();
+        if( $this->_arrMvc['mod'] == 'default' ){
+            $bolUri = self::$_arrOption['uri_map'];
+            if( $bolUri ){
+                $this->_arrMvc = $this->parseUri(); 
+            }
         }
-
         /**
          * 过滤输入数据
          */
         $this->_arrMvc['mod'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['mod']);
         $this->_arrMvc['ctrl'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['ctrl']);
         $this->_arrMvc['act'] = preg_replace('/[^0-9a-zA-Z]/','',$this->_arrMvc['act']);
-	
+
         do {
             $strModuleName = ucfirst($this->_arrMvc['mod']);
             $strControllerName = $strModuleName . '_Controller_' . ucfirst( $this->_arrMvc['ctrl'] );
@@ -127,12 +126,12 @@ class Crab_Dispatcher {
             $this->_objRequest->setParam('act', $this->_arrMvc['act']);
             if ( ! class_exists( $strControllerName ) ){
                 $strModuleDir = self::$_arrOption['mdir'] . "/" . $strModuleName;
-				$strControllerDir = $strModuleDir . '/Controller/'; 
+                $strControllerDir = $strModuleDir . '/Controller/'; 
                 $strControllerFile = $strControllerDir. "/" . ucfirst($this->_arrMvc['ctrl']) . ".php";
                 if ( ! is_dir( $strModuleDir ) ) {
                     throw new Exception( "module dir: {$strModuleDir} doesn`t exist" );
                 }
-				if ( ! is_dir( $strControllerDir ) ) {
+                if ( ! is_dir( $strControllerDir ) ) {
                     throw new Exception( "controller dir: {$strModuleDir} doesn`t exist" );
                 }
 
@@ -145,40 +144,40 @@ class Crab_Dispatcher {
                 }
             }
 
-			/** initial controller pass the Crab_Request */	
+            /** initial controller pass the Crab_Request */	
             $objController = new $strControllerName( $this->_objRequest );
 
             if ( ! method_exists( $objController, $strActionName ) ){
                 throw new Exception("action: {$strActionName} doesn`t exist");
             }
-			
+
             ob_start();
-			/** predispatch pass pass the action name */
+            /** predispatch pass pass the action name */
             $objController->preDispatch( $strActionName );
-			/** predispatch forward */
+            /** predispatch forward */
             $arrForward = $objController->getForward();
-			/** unset objController _arrForward */
+            /** unset objController _arrForward */
             $objController->forward( array() );
 
             /** $arrDiff difference between current action  and forward action */
             $arrDiff = array_diff_assoc( $arrForward, $this->_arrMvc );
 
-			/** if $arrForward $arrDiff empty */
+            /** if $arrForward $arrDiff empty */
             if( ! $arrForward || ! $arrDiff ) {
                 /** run the request action */
                 call_user_func( array( $objController, $strActionName ) );
-				/** postdispatch */
+                /** postdispatch */
                 $objController->postDispatch( $strActionName );
-				/** get output */
+                /** get output */
                 $this->_strOutput = ob_get_clean();
                 $arrForward = $objController->getForward();
             }
-			/** forward parameter */
+            /** forward parameter */
             if( $arrForward['input'] ) {
                 $this->_objRequest->setInput( $arrForward['input'] );
                 unset( $arrForward['input'] );
             }
-			/** difference forward action array and request action array */ 
+            /** difference forward action array and request action array */ 
             $arrDiff = array_diff_assoc( $arrForward, $this->_arrMvc );
             if( $arrDiff ){
                 foreach($arrDiff as $k => $v){
@@ -187,21 +186,53 @@ class Crab_Dispatcher {
             }
         } while ( $arrDiff );
 
-		/** judge the view necessary */
+        /** judge the view necessary */
         if ($this->_objRequest->hasViewRender() === false) {
             echo $this->_strOutput;
         } else {
-						$strSubTplKey = $this->_arrMvc['mod'] . '_' 
-						  . $this->_arrMvc['ctrl'] . '_' 
-						  . $this->_arrMvc['act'];
-        	$strSubTplName = $this->_objRequest->getSubTpl( $strSubTplKey );            
+            $strSubTplKey = $this->_arrMvc['mod'] . '_' 
+                . $this->_arrMvc['ctrl'] . '_' 
+                . $this->_arrMvc['act'];
+            $strSubTplName = $this->_objRequest->getSubTpl( $strSubTplKey );            
             if( strlen( $strSubTplName ) > 0 ){
-            	$objView->setSubTpl($strSubTplKey, $strSubTplName);
+                $objView->setSubTpl($strSubTplKey, $strSubTplName);
             }
             $objView->setMvc($this->_arrMvc);
             $objView->output();
         }
     }
+
+    /**
+     * parse uri map
+     */
+    public function parseUri()
+    {
+        $strUri = $_SERVER['REQUEST_URI'];
+        $arrUri = explode( '?', $strUri );
+        $strUri = array_shift( $arrUri );
+
+        $arrUri = explode( '/', $strUri );
+        array_shift( $arrUri );
+        list( $class, $function ) = $arrUri;
+        $arrMvc['mod'] = 'Default'; 
+        
+        /** caution compat old version the search in http://proactive.yunos.com/search */
+        if( $class == 'search' ){
+            $class = 'Index';
+        }
+        
+        if( empty( $class ) ){
+            $class = 'Index'; 
+        }   
+        if( empty( $function ) ){
+            $function = 'Index';    
+        }   
+        $arrMvc['ctrl'] = $class;
+        $arrMvc['act'] = $function;
+
+        return $arrMvc; 
+    }
+
     /**
      * singleton pattern
      *
@@ -221,28 +252,5 @@ class Crab_Dispatcher {
     public function run() {
         $objRequest = new Crab_Request();
         $this->dispatch( $objRequest );        
-    }
-    /**
-     * parse uri info 
-     */
-    public function parseUri()
-    {
-        $strUri = $_SERVER['REQUEST_URI'];
-		$strUri = array_shift( explode( '?', $strUri ) );
-	
-		$arrUri = explode( '/', $strUri );
-		array_shift( $arrUri );
-		list( $class, $function ) = $arrUri;
-        $arrMvc['mod'] = 'Default'; 
-        if( empty( $class ) ){
-            $class = 'Index'; 
-        }
-        if( empty( $function ) ){
-            $function = 'Index';    
-        }
-        $arrMvc['ctrl'] = $class;
-        $arrMvc['act'] = $function;
-
-        return $arrMvc;
     }
 }

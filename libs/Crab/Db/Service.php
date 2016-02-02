@@ -2,8 +2,8 @@
 /*
  * 数据库中间层实现类
  *
- * @author liu21st@gmail.com
- * @modify allenhaozi@gmail.com
+ * @author liu21st
+ * @modify allen.mh@alibaba-inc.com
  */
 class Crab_Db_Service {
     // 数据库类型
@@ -139,7 +139,9 @@ class Crab_Db_Service {
      * @access protected
      */
     protected function debug() {
-		Crab_Log::Log( 'debug','SQL', $this->queryStr );
+        if (isset($this->config['params']['sql_debug']) && $this->config['params']['sql_debug'] ){
+		    Crab_Log::Log( 'debug','SQL', $this->queryStr );
+        }
     }
 
     /**
@@ -166,7 +168,8 @@ class Crab_Db_Service {
             if(is_array($val) && 'exp' == $val[0]){
                 $set[]  =   $this->parseKey($key).'='.$val[1];
             }elseif(is_scalar($val) || is_null($val)) { // 过滤非标量数据
-              if(C('DB_BIND_PARAM') && 0 !== strpos($val,':')){
+                $DB_BIND_PARAM = Crab_Config::getConfig( 'DB_BIND_PARAM' );
+              if( $DB_BIND_PARAM && 0 !== strpos($val,':')){
                 $name   =   md5($key);
                 $set[]  =   $this->parseKey($key).'=:'.$name;
                 $this->bindParam($name,$val);
@@ -395,7 +398,8 @@ class Crab_Db_Service {
             }
         }else {
             //对字符串类型字段采用模糊匹配
-            if(C('DB_LIKE_FIELDS') && preg_match('/('.C('DB_LIKE_FIELDS').')/i',$key)) {
+            $strLikePreg = Crab_Config::getConfig( 'DB_LIKE_FIELDS' );
+            if( $strLikePreg && preg_match('/('. $strLikePreg .')/i',$key)) {
                 $val  =  '%'.$val.'%';
                 $whereStr .= $key.' LIKE '.$this->parseValue($val);
             }else {

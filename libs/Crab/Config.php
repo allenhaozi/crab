@@ -3,7 +3,7 @@
  * 
  * 配置管理类
  * 
- * @modify allenhaozi@gmail.com
+ * @modify allen.mh@alibaba-inc.com
  */
 class Crab_Config {
     /**

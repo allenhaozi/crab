@@ -1,23 +1,12 @@
 <?php
 /**
- * Crab/View/Interface.php
- *
- * 视图接口文件
- *
- * @category Crab
- * @package Crab_View
- * @author songqi<songqi@baidu.com>
- * @version 1.0
- *
- */
-/**
  * Crab_View_Interface
  *
  * 视图接口
  *
  * @category Crab
  * @package Crab_View
- * @author songqi<songqi@baidu.com>
+ * @author songqi
  * @version 1.0
  */
 interface Crab_View_Interface {

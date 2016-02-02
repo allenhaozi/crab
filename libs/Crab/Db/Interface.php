@@ -2,7 +2,7 @@
 /**
  * 数据库接口类
  *
- * @author allenhaozi@gmail.com
+ * @author allen.mh@alibaba-inc.com
  */
 interface Crab_Db_Interface
 {

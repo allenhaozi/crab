@@ -7,7 +7,7 @@
  * @category Crab
  * @package Crab_Controller
  * @author songqi
- * @modify allenhaozi@gmail.com
+ * @modify allenhaozi
  */
 /**
  * Crab_View_Interface

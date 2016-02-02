@@ -3,8 +3,8 @@
  * model 基类
  * 实现了ORM和ActiveRecords模式
  *
- * @author liu21st@gmail.com
- * @modify allenhaozi@gmail.com
+ * @author liu21st
+ * @modify allenhaozi
  */
 abstract class Crab_Model implements Crab_Db_Interface
 {
@@ -110,12 +110,12 @@ abstract class Crab_Model implements Crab_Db_Interface
         }
         /** 存入数据库连接信息 host,port,pwd */
         $arrDbConfig['params'] = $arrDbInfo;
-
         if( ! isset( $_db[$intLinkNum] ) ) {
             $_db[$intLinkNum] = Crab_Db_Service::getInstance( $arrDbConfig );
         }
         // 切换数据库连接
         $this->db = $_db[$intLinkNum];
+        
         $this->_after_db();
         return $this;
     }
