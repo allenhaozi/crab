@@ -101,15 +101,16 @@ class Crab_Dispatcher {
         $objView = new $strViewName();
         $this->_objRequest->setView( $objView );
 
-        $this->_arrMvc['mod'] = $this->_objRequest->getParam('mod', 'default');
-        $this->_arrMvc['ctrl'] = $this->_objRequest->getParam('ctrl', 'index');
-        $this->_arrMvc['act'] = $this->_objRequest->getParam('act', 'index');
-        if( $this->_arrMvc['mod'] == 'default' ){
-            $bolUri = self::$_arrOption['uri_map'];
-            if( $bolUri ){
-                $this->_arrMvc = $this->parseUri(); 
-            }
+        $bolUri = self::$_arrOption['uri_map'];
+        
+        if( $bolUri ){
+            $this->_arrMvc = $this->parseUri(); 
+        } else {
+            $this->_arrMvc['mod'] = $this->_objRequest->getParam('mod', 'default');
+            $this->_arrMvc['ctrl'] = $this->_objRequest->getParam('ctrl', 'index');
+            $this->_arrMvc['act'] = $this->_objRequest->getParam('act', 'index');
         }
+        
         /**
          * 过滤输入数据
          */
@@ -207,29 +208,37 @@ class Crab_Dispatcher {
      */
     public function parseUri()
     {
+        $module = '';
+        $class = '';
+        $function = '';
+
         $strUri = $_SERVER['REQUEST_URI'];
+        
         $arrUri = explode( '?', $strUri );
         $strUri = array_shift( $arrUri );
-
         $arrUri = explode( '/', $strUri );
-        array_shift( $arrUri );
-        list( $class, $function ) = $arrUri;
-        $arrMvc['mod'] = 'Default'; 
-        
-        /** caution compat old version the search in http://proactive.yunos.com/search */
-        if( $class == 'search' ){
-            $class = 'Index';
+        array_shift( $arrUri ); 
+       
+        if( count( $arrUri ) <= 2 ) { 
+            list( $class,$function ) = $arrUri;
+        } else {
+            list( $module,$class,$function ) = $arrUri;
         }
-        
+
+        if( empty( $module ) ){
+            $module = 'Default'; 
+        }
         if( empty( $class ) ){
             $class = 'Index'; 
         }   
         if( empty( $function ) ){
             $function = 'Index';    
         }   
+
+        $arrMvc['mod'] = $module;
         $arrMvc['ctrl'] = $class;
         $arrMvc['act'] = $function;
-
+            
         return $arrMvc; 
     }
 
