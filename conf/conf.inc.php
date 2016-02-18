@@ -15,4 +15,5 @@ $arrConfig = array(
 		'master' => array( 'host' => '127.0.0.1', 'port' => '9000' ),
 		'slave' => array( 'host' => '127.0.0.1', 'port' => '9000' ),
 	),
+        'uri_map' => true,
 );

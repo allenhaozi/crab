@@ -1,1 +1,1 @@
-/home/mahao01/html/conf/db.inc.php
+/home/allen.mh/appsearch/proactive/conf/db.inc.php

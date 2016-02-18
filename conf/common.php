@@ -134,3 +134,7 @@ function get_client_ip()
 
 		return trim($ip);	
 }
+function genUniqueId()
+{
+    return md5(base64_encode(pack('N6',mt_rand(),mt_rand(),mt_rand(),mt_rand(),mt_rand(),uniqid())));
+}
