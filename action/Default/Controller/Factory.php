@@ -6,7 +6,7 @@
  *
  * @author allenhaozi@gmail.com
  */
-class Default_Controller_Factory extends Controller
+class Default_Factory extends Controller
 {
 	public function indexAction()
 	{

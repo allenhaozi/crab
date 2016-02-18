@@ -1,5 +1,5 @@
 <?php
-class Default_Controller_Adapter extends Controller
+class Default_Adapter extends Controller
 {
 	public function indexAction()
 	{

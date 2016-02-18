@@ -4,7 +4,7 @@
  *
  * @author allenhaozi@gmail.com
  */
-class Default_Controller_Builder extends Controller 
+class Default_Builder extends Controller 
 {
 	public function indexAction()
 	{

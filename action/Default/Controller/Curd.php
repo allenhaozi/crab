@@ -1,5 +1,5 @@
 <?php
-class Default_Controller_Curd extends Crab_Action
+class Default_Curd extends Crab_Action
 {
 	public function indexAction()
 	{
