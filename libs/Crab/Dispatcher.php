@@ -22,23 +22,23 @@ class Crab_Dispatcher {
     /**
      * singleton pattern
      *
-     * @var Crab_Controller_Dispatcher 
+     * @var Crab_Controller_Dispatcher
      */
     protected static $instance;
     /**
-     * configuration args 
+     * configuration args
      *
-     * @var array 
+     * @var array
      */
     protected static $_arrOption = array(
         /** default view class */
-        'view' => 'Crab_View', 
+        'view' => 'Crab_View',
         /** action dir */
-        'mdir' => '', 
+        'mdir' => '',
         'uri_map' => false,
     );
     /**
-     * object request 
+     * object request
      *
      * @var Crab_Request request object
      */
@@ -82,7 +82,7 @@ class Crab_Dispatcher {
     /**
      * distribute by the request
      *
-     * @param Crab_Request objRequest  
+     * @param Crab_Request objRequest
      * @throws Exception
      */
     public function dispatch( Crab_Request $objRequest = null )
@@ -102,15 +102,15 @@ class Crab_Dispatcher {
         $this->_objRequest->setView( $objView );
 
         $bolUri = self::$_arrOption['uri_map'];
-        
+
         if( $bolUri ){
-            $this->_arrMvc = $this->parseUri(); 
+            $this->_arrMvc = $this->parseUri();
         } else {
             $this->_arrMvc['mod'] = $this->_objRequest->getParam('mod', 'default');
             $this->_arrMvc['ctrl'] = $this->_objRequest->getParam('ctrl', 'index');
             $this->_arrMvc['act'] = $this->_objRequest->getParam('act', 'index');
         }
-        
+
         /**
          * 过滤输入数据
          */
@@ -120,15 +120,17 @@ class Crab_Dispatcher {
 
         do {
             $strModuleName = ucfirst($this->_arrMvc['mod']);
-            $strControllerName = $strModuleName . '_Controller_' . ucfirst( $this->_arrMvc['ctrl'] );
+            $strControllerName = $strModuleName . '_' . ucfirst( $this->_arrMvc['ctrl'] ) . 'Controller' ;
+
             $strActionName = $this->_arrMvc['act'] . "Action";
             $this->_objRequest->setParam('mod', $strModuleName);
             $this->_objRequest->setParam('ctrl', ucfirst($this->_arrMvc['ctrl']));
             $this->_objRequest->setParam('act', $this->_arrMvc['act']);
             if ( ! class_exists( $strControllerName ) ){
                 $strModuleDir = self::$_arrOption['mdir'] . "/" . $strModuleName;
-                $strControllerDir = $strModuleDir . '/Controller/'; 
+                $strControllerDir = $strModuleDir;
                 $strControllerFile = $strControllerDir. "/" . ucfirst($this->_arrMvc['ctrl']) . ".php";
+
                 if ( ! is_dir( $strModuleDir ) ) {
                     throw new Exception( "module dir: {$strModuleDir} doesn`t exist" );
                 }
@@ -145,7 +147,7 @@ class Crab_Dispatcher {
                 }
             }
 
-            /** initial controller pass the Crab_Request */	
+            /** initial controller pass the Crab_Request */
             $objController = new $strControllerName( $this->_objRequest );
 
             if ( ! method_exists( $objController, $strActionName ) ){
@@ -178,7 +180,7 @@ class Crab_Dispatcher {
                 $this->_objRequest->setInput( $arrForward['input'] );
                 unset( $arrForward['input'] );
             }
-            /** difference forward action array and request action array */ 
+            /** difference forward action array and request action array */
             $arrDiff = array_diff_assoc( $arrForward, $this->_arrMvc );
             if( $arrDiff ){
                 foreach($arrDiff as $k => $v){
@@ -191,10 +193,10 @@ class Crab_Dispatcher {
         if ($this->_objRequest->hasViewRender() === false) {
             echo $this->_strOutput;
         } else {
-            $strSubTplKey = $this->_arrMvc['mod'] . '_' 
-                . $this->_arrMvc['ctrl'] . '_' 
+            $strSubTplKey = $this->_arrMvc['mod'] . '_'
+                . $this->_arrMvc['ctrl'] . '_'
                 . $this->_arrMvc['act'];
-            $strSubTplName = $this->_objRequest->getSubTpl( $strSubTplKey );            
+            $strSubTplName = $this->_objRequest->getSubTpl( $strSubTplKey );
             if( strlen( $strSubTplName ) > 0 ){
                 $objView->setSubTpl($strSubTplKey, $strSubTplName);
             }
@@ -213,33 +215,33 @@ class Crab_Dispatcher {
         $function = '';
 
         $strUri = $_SERVER['REQUEST_URI'];
-        
+
         $arrUri = explode( '?', $strUri );
         $strUri = array_shift( $arrUri );
         $arrUri = explode( '/', $strUri );
-        array_shift( $arrUri ); 
-       
-        if( count( $arrUri ) <= 2 ) { 
+        array_shift( $arrUri );
+
+        if( count( $arrUri ) <= 2 ) {
             list( $class,$function ) = $arrUri;
         } else {
             list( $module,$class,$function ) = $arrUri;
         }
 
         if( empty( $module ) ){
-            $module = 'Default'; 
+            $module = 'Default';
         }
         if( empty( $class ) ){
-            $class = 'Index'; 
-        }   
+            $class = 'Index';
+        }
         if( empty( $function ) ){
-            $function = 'Index';    
-        }   
+            $function = 'Index';
+        }
 
         $arrMvc['mod'] = $module;
         $arrMvc['ctrl'] = $class;
         $arrMvc['act'] = $function;
-            
-        return $arrMvc; 
+
+        return $arrMvc;
     }
 
     /**
@@ -256,10 +258,10 @@ class Crab_Dispatcher {
         }
     }
     /**
-     * application default entrance 
+     * application default entrance
      */
     public function run() {
         $objRequest = new Crab_Request();
-        $this->dispatch( $objRequest );        
+        $this->dispatch( $objRequest );
     }
 }

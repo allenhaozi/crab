@@ -1,9 +1,9 @@
 <?php
 /**
  * Crab/Log.php
- * 
+ *
  * 日志记录类
- * 
+ *
  * @category Crab
  * @author songqi
  * @modify allenhaozi
@@ -12,7 +12,7 @@
  * Zend_Log
  */
 require_once("Zend/Log.php");
- 
+
 class Crab_Log {
     /**
      * Zend_Log对象的数组
@@ -21,14 +21,20 @@ class Crab_Log {
      */
     private static $_arrZendLogs;
     /**
-     * Log相关的参数
+     * Log parameters
      *
      * @var array
      */
-    private static $_arrOptions = array('logdir' => '', 'userid'=> 0, 'targetuserid'=>0);
-    
+    private static $_arrOptions = array(
+        'logdir' => '',
+        'userid'=> 0,
+        'targetuserid'=>0,
+        'logfileformat' => 'ymd'
+    );
+
     /**
-     * 设置参数，格式：
+     * setting
+     *
      * array(
      *  'logdir' => '',
      *  'userid' => '',
@@ -39,23 +45,23 @@ class Crab_Log {
     public static function setOptions($arrOptions) {
         self::$_arrOptions = array_merge(self::$_arrOptions, $arrOptions);
     }
-    
+
     public static function getOptions() {
         return self::$_arrOptions;
     }
-    
+
     /**
      * 获取日志目录对象
      *
      * @return string
      */
     private static function getLogDir() {
-        $strDir = self::$_arrOptions['logdir'].'/'.date("Ymd");   		
+        $strDir = self::$_arrOptions['logdir'];
         if (!is_dir($strDir)) {
             $strDir = trim($strDir);
             $bolSuc = false;
             if (strlen($strDir)>3) {
-                $bolSuc = @mkdir($strDir, 0775, true);               
+                $bolSuc = @mkdir($strDir, 0775, true);
             }
             if (!$bolSuc && !is_dir($strDir)) {
                 throw new Exception( __CLASS__ . 'log dir dose not exist ! ');
@@ -63,8 +69,19 @@ class Crab_Log {
         }
         return $strDir;
     }
+
+    private static function getLogFormat()
+    {
+        $strFormat = self::$_arrOptions['logfileformat'];
+        $arrFormat=array('YmdH','Ymd');
+        if( ! in_array( $strFormat, $arrFormat ) ){
+            $strFormat = 'Ymd';
+        }
+        return $strFormat;
+    }
+
     /**
-     * 获取log handler
+     * get log handler
      *
      * @param string $strType
      * @return Zend_Log
@@ -74,12 +91,14 @@ class Crab_Log {
             return self::$_arrZendLogs[$strType];
         } else {
             $strDir = self::getLogDir();
-            $strFileName = $strDir."/".$strType.".log";
+            $strFileFormat = self::getLogFormat();
+            $append = date($strFileFormat);
+            $strFileName = $strDir.'/'.$strType.".log." . $append;
             $objWriter = new Zend_Log_Writer_Stream($strFileName);
-            
+
             $strFormat = "%message%" . PHP_EOL;
             $objFormatter = new Zend_Log_Formatter_Simple($strFormat);
-            $objWriter->setFormatter($objFormatter);    
+            $objWriter->setFormatter($objFormatter);
             $objLog = new Zend_Log($objWriter);
             self::$_arrZendLogs[$strType] = $objLog;
             return self::$_arrZendLogs[$strType];
@@ -92,7 +111,7 @@ class Crab_Log {
      * @param  string strOpName 操作的名称，包括
      * @param array arrParams 参数，包括url或者插入数据库参数
      */
-    public static function Log($strLogType, $strOpName, $mixParam = null, $strPlace = null) {        
+    public static function Log($strLogType, $strOpName, $mixParam = null, $strPlace = null) {
 
         if (is_null ( $strLogType )) {
             $strLogType = 'default';
@@ -102,23 +121,23 @@ class Crab_Log {
         }
         $objLogHandle = self::getLogHandler ( $strLogType );
         $strTm = '[' . date ( 'Y-m-d H:i:s' ) . ']';
-		
+
         $strParams = '-';
         if ( is_string( $mixParam ) || is_numeric( $mixParam ) ){
 			$strParam = $mixParam;
 		} elseif( is_object( $mixParam ) || is_resource( $mixParam ) ) {
-			$strParam = serialize( $mixParam );	
+			$strParam = serialize( $mixParam );
 		} elseif( is_array( $mixParam ) ){
-			$strParam = http_build_query( $mixParam );	
+			$strParam = http_build_query( $mixParam );
 		}elseif( is_bool( $mixParam ) ){
 			if( $mixParam )
-				$strParam = 'true';		
-			else 
+				$strParam = 'true';
+			else
 				$strParam = 'false';
 		} elseif( is_null( $mixParam ) ){
-			$strParam = 'null';	
+			$strParam = 'null';
 		}
-		$strParam = '[' . $strParam . ']';	
+		$strParam = '[' . $strParam . ']';
         $arrOption = self::getOptions ();
 		$strLogId = $arrOption['logid'];
 
@@ -135,8 +154,8 @@ class Crab_Log {
         }
         //chr(9)表示tab键
         $strData = $strTm.chr(9).$strLogId.chr(9).$strIp.chr(9).$strOpName.chr(9).$strParam.chr(9).$strPlace;
-        
-        $objLogHandle->notice ( $strData );       
+
+        $objLogHandle->notice ( $strData );
 	}
 
     /**
@@ -151,10 +170,10 @@ class Crab_Log {
             $onlineip = getenv('HTTP_X_FORWARDED_FOR');
         } elseif (getenv('REMOTE_ADDR')) {
             $onlineip = getenv('REMOTE_ADDR'); //再次这样取得ip
-            
+
         } else {
             $onlineip = $_SERVER['REMOTE_ADDR']; //不行再这样取..～～
-            
+
         }
         return $onlineip;
     }
@@ -166,4 +185,3 @@ class Crab_Log {
     	self::$_arrZendLogs = null;
     }
 }
-?>
