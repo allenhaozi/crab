@@ -1,7 +1,7 @@
 <?php
 /**
  * Mysql数据库驱动类
- * 
+ *
  * @author liu21st
  * @modify allen.mh@alibaba-inc.com
  */
@@ -30,7 +30,7 @@ class Crab_Db_Mysql extends Crab_Db_Service
         if ( ! isset($this->linkID[$linkNum]) ) {
 			if( empty( $config ) ){
 				throw new Exception( __CLASS__ . 'db config is empty ' );
-			} 
+			}
             // 处理不带端口号的socket连接情况
             $host = $config['hostname'].($config['hostport']?":{$config['hostport']}":'');
             // 是否长连接
@@ -40,14 +40,14 @@ class Crab_Db_Mysql extends Crab_Db_Service
             }else{
                 $this->linkID[$linkNum] = mysql_connect( $host, $config['username'], $config['password'],true,131072);
             }
-			if ( ! $this->linkID[$linkNum] 
-				|| (!empty($config['database']) 
-				&& !mysql_select_db( $config['database'], $this->linkID[$linkNum] ) ) 
+			if ( ! $this->linkID[$linkNum]
+				|| (!empty($config['database'])
+				&& !mysql_select_db( $config['database'], $this->linkID[$linkNum] ) )
 			) {
 				throw new Exception( __CLASS__ . '#' . __FUNCTION__ . '#' .mysql_error() );
             }
             $dbVersion = mysql_get_server_info($this->linkID[$linkNum]);
-			
+
 			/** 数据库编码方式 */
             mysql_query("SET NAMES '". $this->dbCharSet ."'", $this->linkID[$linkNum]);
             //设置 sql_model
@@ -85,7 +85,7 @@ class Crab_Db_Mysql extends Crab_Db_Service
         $this->queryStr = $str;
         //释放前次的查询结果
         if ( $this->queryID ) {    $this->free();    }
-       
+
         $this->queryID = mysql_query($str, $this->_linkID);
         $this->debug();
         if ( false === $this->queryID ) {
@@ -309,13 +309,8 @@ class Crab_Db_Mysql extends Crab_Db_Service
      * @return string
      */
     public function escapeString($str) {
-        if($this->_linkID) {
-            return mysql_real_escape_string($str,$this->_linkID);
-        }else{
-            return mysql_escape_string($str);
-        }
+        return addslashes( $str );
     }
-
     /**
      * 字段和表名处理添加`
      * @access protected
